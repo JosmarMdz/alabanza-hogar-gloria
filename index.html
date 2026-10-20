@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Alabanza - Hogar de su Gloria</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1115;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #171b24, #252b38);
+      padding: 35px 20px 30px;
+      text-align: center;
+      border-bottom: 1px solid #343a48;
+    }
+
+    .logo {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #aeb5c3;
+      font-size: 15px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      margin: auto;
+      padding: 25px 18px 50px;
+    }
+
+    .search {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid #3a4050;
+      background: #191d25;
+      color: white;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 28px;
+    }
+
+    .search:focus {
+      border-color: #7c83ff;
+    }
+
+    .section-title {
+      font-size: 19px;
+      margin-bottom: 14px;
+    }
+
+    .folder {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: #191d25;
+      border: 1px solid #2f3542;
+      padding: 18px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .folder:hover {
+      background: #222733;
+      transform: translateY(-1px);
+    }
+
+    .folder-icon {
+      font-size: 30px;
+    }
+
+    .folder-name {
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .folder-info {
+      color: #8f97a7;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .welcome {
+      text-align: center;
+      color: #8f97a7;
+      margin-top: 35px;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      color: #666d7b;
+      font-size: 12px;
+      padding: 30px 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">🎵</div>
+
+    <h1>Alabanza</h1>
+
+    <p class="subtitle">
+      Hogar de su Gloria
+    </p>
+  </header>
+
+  <main class="container">
+
+    <input
+      type="text"
+      class="search"
+      placeholder="🔎 Buscar una alabanza..."
+    >
+
+    <h2 class="section-title">
+      📁 Categorías
+    </h2>
+
+    <div class="folder">
+      <div class="folder-icon">🎶</div>
+
+      <div>
+        <div class="folder-name">
+          Alabanzas
+        </div>
+
+        <div class="folder-info">
+          Canciones de alabanza
+        </div>
+      </div>
+    </div>
+
+    <div class="folder">
+      <div class="folder-icon">🙏</div>
+
+      <div>
+        <div class="folder-name">
+          Adoración
+        </div>
+
+        <div class="folder-info">
+          Canciones de adoración
+        </div>
+      </div>
+    </div>
+
+    <div class="folder">
+      <div class="folder-icon">🔥</div>
+
+      <div>
+        <div class="folder-name">
+          Especiales
+        </div>
+
+        <div class="folder-info">
+          Cantos especiales de la iglesia
+        </div>
+      </div>
+    </div>
+
+    <div class="welcome">
+      <p>
+        Bienvenido a nuestra página de<br>
+        acordes y alabanzas.
+      </p>
+
+      <p>
+        Próximamente podrás buscar tus
+        canciones, ver sus acordes y
+        transponerlas.
+      </p>
+    </div>
+
+  </main>
+
+  <footer>
+    Alabanza - Hogar de su Gloria
+  </footer>
+
+</body>
+</html>
