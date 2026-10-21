@@ -202,13 +202,59 @@
     if (error) {
         estado.textContent = '🔴 Error de Supabase: ' + error.message;
         console.error(error);
-    } else {
-        estado.textContent =
-            '🟢 Supabase conectado correctamente. Carpetas encontradas: ' +
-            data.length;
+   } else {
 
-        console.log('Carpetas encontradas:', data);
-    }
+    estado.textContent =
+        '🟢 Supabase conectado correctamente. Carpetas encontradas: ' +
+        data.length;
+
+    console.log('Carpetas encontradas:', data);
+
+    const container = document.getElementById('folders-container');
+
+    container.innerHTML = '';
+
+    data.forEach(folder => {
+
+        let icon = '📁';
+        let description = 'Canciones de esta categoría';
+
+        if (folder.name === 'Adoracion') {
+            icon = '🙏';
+            description = 'Canciones de adoración';
+        }
+
+        if (folder.name === 'Moderadas') {
+            icon = '🎵';
+            description = 'Canciones moderadas';
+        }
+
+        if (folder.name === 'Jubilo') {
+            icon = '🎉';
+            description = 'Cantos de júbilo';
+        }
+
+        const folderElement = document.createElement('div');
+
+        folderElement.className = 'folder';
+
+        folderElement.innerHTML = `
+            <div class="folder-icon">${icon}</div>
+
+            <div>
+                <div class="folder-name">
+                    ${folder.name}
+                </div>
+
+                <div class="folder-info">
+                    ${description}
+                </div>
+            </div>
+        `;
+
+        container.appendChild(folderElement);
+    });
+} 
 }
 
 probarSupabase();
