@@ -264,7 +264,8 @@ async function abrirCarpeta(folderId, folderName) {
     const { data, error } = await supabaseClient
         .from('songs')
         .select('*')
-        .eq('folder_id', folderId);
+        .eq('folder_id', folderId)
+        .order('title', { ascending: true });
 
     if (error) {
         console.error('Error al cargar canciones:', error);
@@ -274,12 +275,173 @@ async function abrirCarpeta(folderId, folderName) {
 
     console.log('Canciones encontradas:', data);
 
-    alert(
-        'Carpeta: ' + folderName +
-        '\nCanciones encontradas: ' + data.length
-    );
-}
+    // Crear ventana para mostrar las canciones
+    const ventana = document.createElement('div');
 
+    ventana.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: #0b0b0f;
+        color: white;
+        z-index: 10000;
+        overflow-y: auto;
+        padding: 20px;
+    `;
+
+    // Encabezado
+    const encabezado = document.createElement('div');
+
+    encabezado.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    `;
+
+    const botonVolver = document.createElement('button');
+
+    botonVolver.textContent = '← Volver';
+
+    botonVolver.style.cssText = `
+        background: #292936;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 18px;
+        font-size: 16px;
+        cursor: pointer;
+    `;
+
+    botonVolver.onclick = () => {
+        ventana.remove();
+    };
+
+    const tituloCarpeta = document.createElement('h2');
+
+    tituloCarpeta.textContent = folderName;
+
+    tituloCarpeta.style.cssText = `
+        margin: 0;
+        font-size: 24px;
+    `;
+
+    encabezado.appendChild(botonVolver);
+    encabezado.appendChild(tituloCarpeta);
+
+    ventana.appendChild(encabezado);
+
+    // Si no hay canciones
+    if (!data || data.length === 0) {
+
+        const mensaje = document.createElement('p');
+
+        mensaje.textContent = 'No hay canciones en esta carpeta todavía.';
+
+        mensaje.style.cssText = `
+            text-align: center;
+            color: #aaa;
+            margin-top: 50px;
+            font-size: 18px;
+        `;
+
+        ventana.appendChild(mensaje);
+
+    } else {
+
+        // Crear lista de canciones
+        data.forEach(cancion => {
+
+            const tarjeta = document.createElement('div');
+
+            tarjeta.style.cssText = `
+                background: #17171f;
+                border: 1px solid #292936;
+                border-radius: 14px;
+                padding: 18px;
+                margin-bottom: 12px;
+                cursor: pointer;
+            `;
+
+            const titulo = document.createElement('div');
+
+            titulo.textContent = cancion.title || 'Sin título';
+
+            titulo.style.cssText = `
+                font-size: 19px;
+                font-weight: bold;
+            `;
+
+            tarjeta.appendChild(titulo);
+
+            tarjeta.onclick = () => {
+                mostrarCancion(cancion, ventana);
+            };
+
+            ventana.appendChild(tarjeta);
+        });
+    }
+
+    document.body.appendChild(ventana);
+}
+function mostrarCancion(cancion, ventanaAnterior) {
+
+    const lectura = document.createElement('div');
+
+    lectura.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: #0b0b0f;
+        color: white;
+        z-index: 20000;
+        overflow-y: auto;
+        padding: 20px;
+    `;
+
+    const botonVolver = document.createElement('button');
+
+    botonVolver.textContent = '← Volver a canciones';
+
+    botonVolver.style.cssText = `
+        background: #292936;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 18px;
+        font-size: 16px;
+        margin-bottom: 25px;
+    `;
+
+    botonVolver.onclick = () => {
+        lectura.remove();
+    };
+
+    const titulo = document.createElement('h1');
+
+    titulo.textContent = cancion.title || 'Sin título';
+
+    titulo.style.cssText = `
+        font-size: 28px;
+        margin-bottom: 25px;
+    `;
+
+    const contenido = document.createElement('div');
+
+    contenido.textContent = cancion.content || '';
+
+    contenido.style.cssText = `
+        white-space: pre-wrap;
+        font-size: 18px;
+        line-height: 1.7;
+        font-family: Arial, sans-serif;
+        padding-bottom: 40px;
+    `;
+
+    lectura.appendChild(botonVolver);
+    lectura.appendChild(titulo);
+    lectura.appendChild(contenido);
+
+    document.body.appendChild(lectura);
+}
 probarSupabase();
 </script>
 </body>
