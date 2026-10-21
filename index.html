@@ -217,13 +217,36 @@
     );
 
     async function probarSupabase() {
+    const estado = document.createElement('div');
+
+    estado.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        padding: 16px;
+        background: #1f2937;
+        color: white;
+        border-radius: 12px;
+        font-size: 16px;
+        z-index: 9999;
+    `;
+
+    estado.textContent = '🔄 Probando conexión con Supabase...';
+    document.body.appendChild(estado);
+
     const { data, error } = await supabaseClient
         .from('folders')
         .select('*');
 
     if (error) {
-        console.error('Error al leer carpetas:', error);
+        estado.textContent = '🔴 Error de Supabase: ' + error.message;
+        console.error(error);
     } else {
+        estado.textContent =
+            '🟢 Supabase conectado correctamente. Carpetas encontradas: ' +
+            data.length;
+
         console.log('Carpetas encontradas:', data);
     }
 }
