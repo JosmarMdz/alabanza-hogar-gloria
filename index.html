@@ -237,7 +237,11 @@
         const folderElement = document.createElement('div');
 
         folderElement.className = 'folder';
+folderElement.className = 'folder';
 
+folderElement.addEventListener('click', () => {
+    abrirCarpeta(folder.id, folder.name);
+});
         folderElement.innerHTML = `
             <div class="folder-icon">${icon}</div>
 
@@ -251,7 +255,7 @@
                 </div>
             </div>
         `;
-
+container.appendChild(folderElement);
         container.appendChild(folderElement);
     });
 } 
