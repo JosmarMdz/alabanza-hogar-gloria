@@ -258,6 +258,27 @@ folderElement.addEventListener('click', () => {
     });
 } 
 }
+async function abrirCarpeta(folderId, folderName) {
+    console.log('Abriendo carpeta:', folderName, folderId);
+
+    const { data, error } = await supabaseClient
+        .from('songs')
+        .select('*')
+        .eq('folder_id', folderId);
+
+    if (error) {
+        console.error('Error al cargar canciones:', error);
+        alert('Error al cargar las canciones: ' + error.message);
+        return;
+    }
+
+    console.log('Canciones encontradas:', data);
+
+    alert(
+        'Carpeta: ' + folderName +
+        '\nCanciones encontradas: ' + data.length
+    );
+}
 
 probarSupabase();
 </script>
