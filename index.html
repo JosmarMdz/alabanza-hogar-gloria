@@ -385,6 +385,296 @@ async function abrirCarpeta(folderId, folderName) {
 }
 function mostrarCancion(cancion, ventanaAnterior) {
 
+    let tonoActual = 0;
+
+    const lectura = document.createElement('div');
+
+    lectura.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: #0b0b0f;
+        color: white;
+        z-index: 20000;
+        overflow-y: auto;
+        padding: 20px;
+    `;
+
+    // ENCABEZADO
+    const encabezado = document.createElement('div');
+
+    encabezado.style.cssText = `
+        position: sticky;
+        top: 0;
+        background: #0b0b0f;
+        padding-bottom: 15px;
+        z-index: 10;
+    `;
+
+    const botonVolver = document.createElement('button');
+
+    botonVolver.textContent = '← Volver';
+
+    botonVolver.style.cssText = `
+        background: #292936;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 16px;
+        font-size: 16px;
+        margin-bottom: 15px;
+    `;
+
+    botonVolver.onclick = () => {
+        lectura.remove();
+    };
+
+    const titulo = document.createElement('h1');
+
+    titulo.textContent = cancion.title || 'Sin título';
+
+    titulo.style.cssText = `
+        font-size: 27px;
+        margin: 5px 0 15px 0;
+    `;
+
+    // CONTROLES
+    const controles = document.createElement('div');
+
+    controles.style.cssText = `
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+    `;
+
+    const botonMenos = document.createElement('button');
+    botonMenos.textContent = '−';
+
+    const tono = document.createElement('span');
+    tono.textContent = 'Tono: 0';
+
+    const botonMas = document.createElement('button');
+    botonMas.textContent = '+';
+
+    [botonMenos, botonMas].forEach(boton => {
+
+        boton.style.cssText = `
+            width: 45px;
+            height: 42px;
+            background: #292936;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        `;
+
+    });
+
+    tono.style.cssText = `
+        min-width: 70px;
+        text-align: center;
+        font-size: 16px;
+    `;
+
+    controles.appendChild(botonMenos);
+    controles.appendChild(tono);
+    controles.appendChild(botonMas);
+
+    encabezado.appendChild(botonVolver);
+    encabezado.appendChild(titulo);
+    encabezado.appendChild(controles);
+
+    lectura.appendChild(encabezado);
+
+    // CONTENIDO DE LA CANCIÓN
+    const contenido = document.createElement('div');
+
+    contenido.style.cssText = `
+        padding-top: 15px;
+        padding-bottom: 50px;
+    `;
+
+    lectura.appendChild(contenido);
+
+    document.body.appendChild(lectura);
+
+
+    // NOTAS
+    const notas = [
+        'C', 'C#', 'D', 'D#', 'E', 'F',
+        'F#', 'G', 'G#', 'A', 'A#', 'B'
+    ];
+
+
+    function transponerAcorde(acorde, semitonos) {
+
+        const match = acorde.match(/^([A-G](?:#|b)?)(.*)$/);
+
+        if (!match) return acorde;
+
+        let nota = match[1];
+        const resto = match[2];
+
+        // Convertir bemoles comunes a equivalentes sostenidos
+        const equivalencias = {
+            'Db': 'C#',
+            'Eb': 'D#',
+            'Gb': 'F#',
+            'Ab': 'G#',
+            'Bb': 'A#'
+        };
+
+        nota = equivalencias[nota] || nota;
+
+        const posicion = notas.indexOf(nota);
+
+        if (posicion === -1) {
+            return acorde;
+        }
+
+        let nuevaPosicion =
+            (posicion + semitonos) % 12;
+
+        if (nuevaPosicion < 0) {
+            nuevaPosicion += 12;
+        }
+
+        return notas[nuevaPosicion] + resto;
+    }
+
+
+    function mostrarContenido() {
+
+        contenido.innerHTML = '';
+
+        const lineas = (cancion.content || '').split('\n');
+
+        lineas.forEach(linea => {
+
+            const fila = document.createElement('div');
+
+            fila.style.cssText = `
+                margin-bottom: 14px;
+                font-family: monospace;
+                font-size: 18px;
+                line-height: 1.35;
+            `;
+
+            const acordeRegex =
+                /\[([A-G](?:#|b)?(?:m|maj7|maj|7|sus2|sus4|dim|aug|add9|6|9|11|13)?)\]/g;
+
+            let posicion = 0;
+            let resultado = '';
+            let coincidencia;
+
+            while ((coincidencia = acordeRegex.exec(linea)) !== null) {
+
+                const textoAntes =
+                    linea.substring(posicion, coincidencia.index);
+
+                resultado += textoAntes;
+
+                const acordeOriginal = coincidencia[1];
+
+                const acordeTranspuesto =
+                    transponerAcorde(
+                        acordeOriginal,
+                        tonoActual
+                    );
+
+                const bloque = document.createElement('span');
+
+                bloque.style.cssText = `
+                    display: inline-flex;
+                    flex-direction: column;
+                    vertical-align: bottom;
+                `;
+
+                const acorde = document.createElement('span');
+
+                acorde.textContent = acordeTranspuesto;
+
+                acorde.style.cssText = `
+                    color: #b56cff;
+                    font-weight: bold;
+                    font-size: 16px;
+                    min-height: 20px;
+                `;
+
+                const letra = document.createElement('span');
+
+                letra.textContent = '';
+
+                bloque.appendChild(acorde);
+                bloque.appendChild(letra);
+
+                fila.appendChild(
+                    document.createTextNode(textoAntes)
+                );
+
+                fila.appendChild(bloque);
+
+                posicion =
+                    coincidencia.index +
+                    coincidencia[0].length;
+            }
+
+            const resto = linea.substring(posicion);
+
+            if (posicion === 0) {
+
+                fila.textContent = linea;
+
+            } else {
+
+                fila.appendChild(
+                    document.createTextNode(resto)
+                );
+            }
+
+            contenido.appendChild(fila);
+        });
+    }
+
+
+    botonMenos.onclick = () => {
+
+        tonoActual--;
+
+        if (tonoActual < -11) {
+            tonoActual = -11;
+        }
+
+        tono.textContent =
+            'Tono: ' +
+            (tonoActual > 0 ? '+' : '') +
+            tonoActual;
+
+        mostrarContenido();
+    };
+
+
+    botonMas.onclick = () => {
+
+        tonoActual++;
+
+        if (tonoActual > 11) {
+            tonoActual = 11;
+        }
+
+        tono.textContent =
+            'Tono: ' +
+            (tonoActual > 0 ? '+' : '') +
+            tonoActual;
+
+        mostrarContenido();
+    };
+
+
+    mostrarContenido();
+}
+
     const lectura = document.createElement('div');
 
     lectura.style.cssText = `
